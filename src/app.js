@@ -5,6 +5,7 @@ import productsRouter from './routers/products.router.js'
 import cartsRouter from './routers/carts.router.js'
 import viewsRouter from './routers/views.router.js'
 import chatRouter from './routers/chat.router.js'
+import sessionsRouter from './routers/sessions.router.js'
 import mongoose from 'mongoose'
 import Message from './dao/models/message.model.js'
 import session from 'express-session'
@@ -55,6 +56,7 @@ try {
     app.use('/products', viewsRouter); // ruta para renderizar la vista de productos
     app.use('/api/products', productsRouter); // registra el router de productos en la ruta /api/products
     app.use('/api/carts', cartsRouter); // registra el router de carritos en la ruta /api/carts
+    app.use('/api/sessions', sessionsRouter); // registra el router de sesiones en la ruta /api/sessions
     
     io.on('connection', socket => {
         console.log('Nuevo cliente conectado!')
