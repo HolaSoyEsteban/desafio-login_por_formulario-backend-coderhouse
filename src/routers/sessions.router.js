@@ -1,9 +1,9 @@
 import { Router } from "express";
 import User from '../dao/models/user.model.js';
+import { hasAdminCredentials } from "../public/js/authMiddleware.js";
 
 const router = Router();
 
-// Ruta para registrar un usuario
 router.post('/register', async (req, res) => {
     try {
         const { first_name, last_name, email, age, password } = req.body;
@@ -14,8 +14,18 @@ router.post('/register', async (req, res) => {
             return res.status(400).json({ message: 'El correo electrónico ya está en uso.' });
         }
 
-        // Crear un nuevo usuario
-        const newUser = new User({ first_name, last_name, email, age, password });
+        // Verificar si las credenciales son de administrador
+        const isAdminCredentials = hasAdminCredentials(email, password);
+
+        // Crear un nuevo usuario con el rol correspondiente
+        const newUser = new User({
+            first_name,
+            last_name,
+            email,
+            age,
+            password,
+            role: isAdminCredentials ? 'admin' : 'usuario'
+        });
         await newUser.save();
 
         const user = {
@@ -23,7 +33,8 @@ router.post('/register', async (req, res) => {
             first_name: newUser.first_name,
             last_name: newUser.last_name,
             email: newUser.email,
-            age: newUser.age
+            age: newUser.age,
+            role: newUser.role
         }
 
         // Almacenar toda la información del usuario en la sesión
@@ -36,7 +47,6 @@ router.post('/register', async (req, res) => {
     }
 });
 
-// Ruta para realizar el inicio de sesión
 router.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -57,7 +67,8 @@ router.post('/login', async (req, res) => {
             first_name: user.first_name,
             last_name: user.last_name,
             email: user.email,
-            age: user.age
+            age: user.age,
+            role: user.role
         }
 
         // Almacenar toda la información del usuario en la sesión

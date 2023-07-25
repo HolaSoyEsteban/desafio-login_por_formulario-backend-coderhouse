@@ -26,7 +26,15 @@ document.addEventListener("DOMContentLoaded", () => {
   
         const result = await response.json();
         console.log(result);
-        // Aquí puedes redireccionar a otra página, mostrar un mensaje de éxito, etc.
+  
+        if (response.ok) {
+          // Registro exitoso, mostrar alerta y redireccionar a la vista de inicio de sesión
+          alert("Registro exitoso");
+          window.location.href = "/login";
+        } else {
+          // Si ocurrió algún error en el registro, muestra el mensaje de error del servidor
+          alert(result.message);
+        }
       } catch (error) {
         console.error("Error al enviar la solicitud:", error.message);
       }

@@ -1,12 +1,23 @@
 // authMiddleware.js
 const isAuthenticated = (req, res, next) => {
     if (req.session.user) {
-      // El usuario está autenticado, permite que continúe a la siguiente ruta
-      next();
+        next();
     } else {
-      // El usuario no está autenticado, redirecciona a la página de inicio de sesión
-      res.redirect('/login');
+        res.redirect('/login');
     }
-  };
-  
-  export default isAuthenticated;
+};
+
+const isAdmin = (req, res, next) => {
+    if (req.session.user && req.session.user.role === 'admin') {
+        next();
+    } else {
+        res.status(403).json({ message: 'Acceso no autorizado.' });
+    }
+};
+
+const hasAdminCredentials = (email, password) => {
+    // Verificar si las credenciales coinciden con las del administrador
+    return email === 'adminCoder@coder.com' && password === 'adminCod3r123';
+};
+
+export { isAuthenticated, isAdmin, hasAdminCredentials };
