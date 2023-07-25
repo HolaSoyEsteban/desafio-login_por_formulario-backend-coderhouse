@@ -16,10 +16,18 @@ router.get('/', isAuthenticated, async (req, res) => {
       products.prevLink = products.hasPrevPage ? `/products?limit=${itemsPorPage}&page=${products.prevPage}` : '';
       products.nextLink = products.hasNextPage ? `/products?limit=${itemsPorPage}&page=${products.nextPage}` : '';
       
-
       // console.log(products);
       
-      res.render('home', products);
+      // Obtener los datos del usuario desde la sesión
+      const userInfo = {
+        first_name: req.session.user.first_name,
+        last_name: req.session.user.last_name,
+        email: req.session.user.email,
+        age: req.session.user.age,
+      };
+      
+      // Renderizar la vista de productos y pasar los datos del usuario
+      res.render('home', { ...products, userInfo });
     } catch (error) {
       console.log('Error al leer los productos:', error);
       res.status(500).json({ error: 'Error al leer los productos' });

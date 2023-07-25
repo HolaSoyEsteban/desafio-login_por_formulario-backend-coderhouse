@@ -1,4 +1,5 @@
 import { Router } from "express";
+import bcrypt from "bcryptjs"; // Librería para encriptar contraseñas
 import User from '../dao/models/user.model.js';
 import { hasAdminCredentials } from "../public/js/authMiddleware.js";
 
@@ -17,13 +18,17 @@ router.post('/register', async (req, res) => {
         // Verificar si las credenciales son de administrador
         const isAdminCredentials = hasAdminCredentials(email, password);
 
-        // Crear un nuevo usuario con el rol correspondiente
+        // Encriptar la contraseña utilizando bcryptjs
+        const saltRounds = 10; // Número de rondas de encriptación (mayor número, más seguro pero más lento)
+        const hashedPassword = bcrypt.hashSync(password, saltRounds);
+
+        // Crear un nuevo usuario con la contraseña encriptada y el rol correspondiente
         const newUser = new User({
             first_name,
             last_name,
             email,
             age,
-            password,
+            password: hashedPassword, // Guardamos la contraseña encriptada
             role: isAdminCredentials ? 'admin' : 'usuario'
         });
         await newUser.save();
@@ -57,8 +62,9 @@ router.post('/login', async (req, res) => {
             return res.status(401).json({ message: 'Credenciales inválidas.' });
         }
 
-        // Verificar la contraseña
-        if (user.password !== password) {
+        // Verificar la contraseña utilizando bcryptjs
+        const passwordsMatch = bcrypt.compareSync(password, user.password);
+        if (!passwordsMatch) {
             return res.status(401).json({ message: 'Credenciales inválidas.' });
         }
 
