@@ -1,7 +1,7 @@
 {
   "name": "desafio-implementacion-de-login",
   "version": "1.0.0",
-  "description": "Desafio de Implementacion de Login en Backend",
+  "description": "Desafio de Implementacion de Login en Backend ...Terminado",
   "main": "src/app.js",
   "type": "module",
   "scripts": {
