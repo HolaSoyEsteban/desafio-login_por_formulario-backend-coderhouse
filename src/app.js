@@ -6,6 +6,7 @@ import cartsRouter from './routers/carts.router.js'
 import viewsRouter from './routers/views.router.js'
 import chatRouter from './routers/chat.router.js'
 import sessionsRouter from './routers/sessions.router.js'
+import viewsUserRouter from './routers/viewsUser.router.js'
 import mongoose from 'mongoose'
 import Message from './dao/models/message.model.js'
 import session from 'express-session'
@@ -21,7 +22,7 @@ app.use(express.static('./src/public')); // middleware para servir archivos est√
 app.use(session({
     store: MongoStore.create({
       mongoUrl: 'mongodb+srv://cardozoesteban:lyqQs94mGfCX24G8@cluster0.jycginf.mongodb.net/ecommerce',
-      dbName: 'sessions',
+      dbName: 'ecommerce',
       mongoOptions: {
         useNewUrlParser: true,
         useUnifiedTopology: true
@@ -52,6 +53,7 @@ try {
     // Rutas
     app.get('/', (req, res) => res.render('index')); // ruta ra√≠z
     
+    app.use('/', viewsUserRouter); // registra el router de usuario en la ruta /
     app.use('/chat', chatRouter); // ruta para renderizar la vista de chat
     app.use('/products', viewsRouter); // ruta para renderizar la vista de productos
     app.use('/api/products', productsRouter); // registra el router de productos en la ruta /api/products
